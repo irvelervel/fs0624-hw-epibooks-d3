@@ -8,7 +8,7 @@ class SingleBook extends Component {
   // props.libro <-- l'oggetto del singolo libro
 
   state = {
-    selected: false,
+    // selected: false,
   }
 
   render() {
@@ -16,15 +16,12 @@ class SingleBook extends Component {
       <div>
         <Card
           // className={this.state.selected ? 'diana border border-2 border-danger' : 'diana'}
-          style={
-            this.state.selected
-              ? {
-                  border: this.state.selected
-                    ? '2px solid red'
-                    : '1px solid gray',
-                }
-              : {}
-          }
+          style={{
+            border:
+              this.props.libro.asin === this.props.selectedBookAsin
+                ? '4px solid red'
+                : '1px solid gray',
+          }}
         >
           <Card.Img
             variant="top"
@@ -33,6 +30,7 @@ class SingleBook extends Component {
               this.setState({
                 selected: !this.state.selected, // sempre l'inverso
               })
+              this.props.changeSelectedBookAsin(this.props.libro.asin)
             }}
           />
           <Card.Body>
@@ -42,7 +40,7 @@ class SingleBook extends Component {
             </Card.Text>
           </Card.Body>
         </Card>
-        {this.state.selected && <CommentArea asin={this.props.libro.asin} />}
+        {/* {this.state.selected && <CommentArea asin={this.props.libro.asin} />} */}
       </div>
     )
   }

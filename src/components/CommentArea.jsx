@@ -5,10 +5,34 @@ import AddComment from './AddComments'
 class CommentArea extends Component {
   state = {
     comments: [],
+    updateCommentsList: false,
+  }
+
+  changeUpdateCommentsList = () => {
+    this.setState({
+      updateCommentsList: !this.state.updateCommentsList,
+    })
   }
 
   componentDidMount = () => {
     this.fetchComments()
+  }
+
+  // la fetch all'avvio va anche bene, ma quello che ci serve sarebbe
+  // richiamare la fetch ulteriormente ogni volta che cambia l'asin selezionato
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevProps.asin !== this.props.asin) {
+      // abbiamo cliccato su un nuovo libro!
+      this.fetchComments()
+    }
+
+    if (prevState.updateCommentsList !== this.state.updateCommentsList) {
+      this.fetchComments()
+      // recupero nuovamente i commenti anche quando cambia la variabile di stato
+      // (updateCommentsList) che avevo creato per avvisarmi di quanto AddComment
+      // posta con successo una recensione
+    }
   }
 
   fetchComments = () => {
@@ -44,7 +68,10 @@ class CommentArea extends Component {
     return (
       <div>
         <CommentsList comments={this.state.comments} />
-        <AddComment asin={this.props.asin} />
+        <AddComment
+          asin={this.props.asin}
+          changeUpdateCommentsList={this.changeUpdateCommentsList}
+        />
         {/* prop drilling: prendo una prop da sopra, SingleBook, a sotto, AddComment */}
       </div>
     )

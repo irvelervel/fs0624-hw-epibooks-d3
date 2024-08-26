@@ -9,7 +9,24 @@ class AddComment extends Component {
       elementId: this.props.asin, // questo è l'asin del libro selezionato,
       // lo prendiamo direttamente dalle props che ci passa CommentArea e
       // lo assegniamo come valore a elementId nello stato
+
+      // ora this.props.asin inizialmente è stringa vuota!
+      // dovremmo mantenerlo aggiornato ogni volta che selezioniamo un nuovo libro
     },
+  }
+
+  componentDidUpdate = (prevProps) => {
+    if (prevProps.asin !== this.props.asin) {
+      // ora manteniamo aggiornato elementId in this.state.rewiew
+      this.setState({
+        review: {
+          ...this.state.review,
+          elementId: this.props.asin,
+          // ora l'asin nello state è aggiornato con il valore ricevuto nelle props
+          // (valore che abbiamo ricevuto quando abbiamo cliccato su un nuovo libro)
+        },
+      })
+    }
   }
 
   handleSubmit = (e) => {
@@ -27,9 +44,15 @@ class AddComment extends Component {
       .then((response) => {
         if (response.ok) {
           alert('Commento salvato!')
+          // quando il commento viene salvato con successo,
+          // cambio lo stato di CommentArea
+          //
+          this.props.changeUpdateCommentsList()
+          //
           this.setState({
             review: {
-              elementId: this.state.elementId,
+              // elementId: this.state.elementId,
+              ...this.state.review,
               rate: '1',
               comment: '',
             },
